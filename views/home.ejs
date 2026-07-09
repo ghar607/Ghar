@@ -1,0 +1,81 @@
+<%- include('partials/header', {title: SITE.name}) %>
+
+<div class="hero-box">
+  <span class="hero-eyebrow">Aapke Mohalle Ki Online Dukan</span>
+  <h1><%= SITE.name %></h1>
+  <p class="tagline"><%= SITE.tagline %></p>
+</div>
+
+<div class="feature-strip">
+  <div class="feature-chip"><span class="feature-icon">🚀</span><span>Tez Delivery</span></div>
+  <div class="feature-chip"><span class="feature-icon">✅</span><span>Verified Dukanein</span></div>
+  <div class="feature-chip"><span class="feature-icon">🔒</span><span>Mehfooz Payment</span></div>
+</div>
+
+<% if (banners && banners.length > 0) { %>
+  <div class="banner-slider">
+    <div class="banner-track">
+      <% [...banners, ...banners].forEach(b => { %>
+        <a href="<%= b.link %>" class="banner-slide">
+          <img src="<%= b.image %>" alt="<%= b.title || SITE.name %>">
+          <% if (b.title) { %><span class="banner-caption"><%= b.title %></span><% } %>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+<% } else { %>
+  <%
+    const categories = [
+      { emoji: "💊", name: "Madison" },
+      { emoji: "🍔", name: "Fast Food" },
+      { emoji: "🛒", name: "Grocery" },
+      { emoji: "🍎", name: "Fruit" },
+      { emoji: "🥦", name: "Sabzi" },
+      { emoji: "🍕", name: "Pizza" },
+      { emoji: "🔧", name: "Hardware" },
+      { emoji: "🍬", name: "Sweets" },
+    ];
+  %>
+  <div class="category-slider">
+    <div class="category-track">
+      <% [...categories, ...categories].forEach(c => { %>
+        <a href="/login?role=customer" class="category-item">
+          <span class="cat-emoji"><%= c.emoji %></span>
+          <span><%= c.name %></span>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+<% } %>
+
+<h2 class="section-title">Aap Kaun Hain?</h2>
+<div class="role-grid">
+  <a href="/login?role=customer" class="role-card customer featured">
+    <span class="role-icon-circle"><span class="role-emoji">🛍️</span></span>
+    <span class="role-text">
+      <strong>Order Now</strong>
+      <span class="role-sub">I am a Customer</span>
+      <span class="role-tagline">Jo bhi chahiye, ek tap mein — seedha aapke ghar tak! 🚀</span>
+    </span>
+  </a>
+  <div class="role-row">
+    <a href="/login?role=shopkeeper" class="role-card shopkeeper">
+      <span class="role-icon-circle"><span class="role-emoji">🏪</span></span>
+      <span class="role-text">
+        <strong>My Business</strong>
+        <span class="role-sub">I have a Shop</span>
+        <span class="role-tagline">Apni dukan online le jayein, naye grahak paayein! 📈</span>
+      </span>
+    </a>
+    <a href="/login?role=rider" class="role-card rider">
+      <span class="role-icon-circle"><span class="role-emoji">🏍️</span></span>
+      <span class="role-text">
+        <strong>Rider</strong>
+        <span class="role-sub">I want to Deliver</span>
+        <span class="role-tagline">Apni gaari, apna waqt — roz achi kamai karein! 💰</span>
+      </span>
+    </a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

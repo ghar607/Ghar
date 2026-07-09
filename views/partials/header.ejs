@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= typeof title !== 'undefined' ? title : SITE.name %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-left">
+    <% if (user && user.role === 'admin') { %>
+      <a href="/admin/add-admin" class="admin-add-btn" title="Naya Admin Add Karein">
+        <span class="admin-add-icon">+</span><span class="admin-add-label">Admin</span>
+      </a>
+    <% } %>
+    <% if (!user) { %>
+      <a href="/login?role=admin" class="admin-login-btn" title="Admin Login">
+        <span class="admin-login-icon">🛡️</span><span class="admin-login-label">Admin Login</span>
+      </a>
+    <% } %>
+    <a href="/" class="brand">🏠 <%= SITE.name %></a>
+  </div>
+  <% if (user) { %>
+    <div class="topbar-right">
+      <span class="who"><%= user.name %> (<%= user.role %>)</span>
+      <a href="/logout" class="logout-link">Logout</a>
+    </div>
+  <% } %>
+</header>
+<main class="page">

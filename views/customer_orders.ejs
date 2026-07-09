@@ -1,0 +1,82 @@
+<%- include('partials/header', {title: 'Mere Orders'}) %>
+
+<h2>Mere Orders</h2>
+<a href="/customer/shops" class="back-link">← Shopping jari rakhein</a>
+
+<% 
+  const activeOrders = orders.filter(o => !['delivered', 'cancelled'].includes(o.status));
+  const historyOrders = orders.filter(o => ['delivered', 'cancelled'].includes(o.status));
+%>
+
+<h3>Active Orders</h3>
+<% if (activeOrders.length === 0) { %>
+  <p class="empty-msg">Abhi koi active order nahi hai.</p>
+<% } %>
+<% activeOrders.forEach(o => { %>
+  <div class="order-card">
+    <div class="order-top">
+      <strong>Order #<%= o.id %></strong>
+      <span class="status-badge status-<%= o.status %>"><%= o.status %></span>
+    </div>
+    <ul class="order-items">
+      <% o.items.forEach(i => { %><li><%= i.name %><% if (i.unit) { %> (<%= i.unit %>)<% } %> × <%= i.qty %> — Rs. <%= i.price * i.qty %></li><% }) %>
+    </ul>
+    <p>Total: Rs. <%= o.total %> | Payment: <%= o.paymentMethod %></p>
+    <% if (o.paymentMethod === 'COD') { %>
+      <span class="pay-badge pay-green">✅ Cash on Delivery</span>
+    <% } else if (o.paymentVerified) { %>
+      <span class="pay-badge pay-green">✅ Payment Verified</span>
+    <% } else { %>
+      <span class="pay-badge pay-red">❌ Payment Verify Ho Rahi Hai</span>
+    <% } %>
+
+    <% if (['pending', 'confirmed'].includes(o.status)) { %>
+      <form method="POST" action="/customer/order/<%= o.id %>/cancel" onsubmit="return confirm('Kya aap sach mein yeh order cancel karna chahte hain?')">
+        <button type="submit" class="remove-btn">❌ Order Cancel Karein</button>
+      </form>
+    <% } %>
+  </div>
+<% }) %>
+
+<h3>History (Guzashta Orders)</h3>
+<% if (historyOrders.length === 0) { %>
+  <p class="empty-msg">Abhi koi purana order nahi hai.</p>
+<% } %>
+<% historyOrders.forEach(o => { %>
+  <div class="order-card">
+    <div class="order-top">
+      <strong>Order #<%= o.id %></strong>
+      <span class="status-badge status-<%= o.status %>"><%= o.status %></span>
+    </div>
+    <ul class="order-items">
+      <% o.items.forEach(i => { %><li><%= i.name %><% if (i.unit) { %> (<%= i.unit %>)<% } %> × <%= i.qty %> — Rs. <%= i.price * i.qty %></li><% }) %>
+    </ul>
+    <p>Total: Rs. <%= o.total %> | Payment: <%= o.paymentMethod %></p>
+    <% if (o.paymentMethod === 'COD') { %>
+      <span class="pay-badge pay-green">✅ Cash on Delivery</span>
+    <% } else if (o.paymentVerified) { %>
+      <span class="pay-badge pay-green">✅ Payment Verified</span>
+    <% } else { %>
+      <span class="pay-badge pay-red">❌ Payment Verify Ho Rahi Hai</span>
+    <% } %>
+
+    <% if (o.status === 'delivered' && !o.rated) { %>
+      <form method="POST" action="/customer/order/<%= o.id %>/review" class="review-form">
+        <label>Shop Ko Rating Dein</label>
+        <select name="stars" required>
+          <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+          <option value="4">⭐⭐⭐⭐ (4)</option>
+          <option value="3">⭐⭐⭐ (3)</option>
+          <option value="2">⭐⭐ (2)</option>
+          <option value="1">⭐ (1)</option>
+        </select>
+        <textarea name="review" placeholder="Apna review likhein (optional)" rows="2"></textarea>
+        <button type="submit" class="btn-primary small">Review Submit Karein</button>
+      </form>
+    <% } else if (o.status === 'delivered' && o.rated) { %>
+      <span class="pay-badge pay-green">⭐ Review De Diya Gaya</span>
+    <% } %>
+  </div>
+<% }) %>
+
+<%- include('partials/footer') %>

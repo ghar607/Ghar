@@ -1,0 +1,24 @@
+<%- include('partials/header', {title: 'Login'}) %>
+
+<div class="form-card">
+  <h2>Login — <span class="role-tag"><%= role %></span></h2>
+  <% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+  <form method="POST" action="/login">
+    <input type="hidden" name="role" value="<%= role %>">
+    <label>Phone Number</label>
+    <input type="text" name="phone" placeholder="03xxxxxxxxx" required>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <button type="submit" class="btn-primary">Login</button>
+  </form>
+  <div class="form-links">
+    <a href="/signup?role=<%= role %>">New user? Sign up</a>
+    <a href="/forgot?role=<%= role %>">Forgot password?</a>
+  </div>
+  <div class="form-links">
+    <a href="/forgot-username?role=<%= role %>">Phone number bhool gaye?</a>
+  </div>
+  <a href="/" class="back-link">← Wapis jayein</a>
+</div>
+
+<%- include('partials/footer') %>

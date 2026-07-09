@@ -1,0 +1,58 @@
+<%- include('partials/header', {title: shop ? shop.name : 'Shop'}) %>
+
+<div class="page-head">
+  <h2><%= shop ? shop.name : 'Shop' %></h2>
+  <a href="/customer/cart" class="cart-link">🧺 Cart</a>
+</div>
+<a href="/customer/shops" class="back-link">← Sari shops</a>
+
+<% if (shop) { const rating = shopRatingInfo(shop); %>
+  <% if (rating.avg) { %>
+    <span class="rating-badge">⭐ <%= rating.avg %> / 5 (<%= rating.count %> reviews)</span>
+  <% } else { %>
+    <span class="rating-badge no-rating">Abhi is shop par koi review nahi</span>
+  <% } %>
+<% } %>
+
+<% if (items.length > 0) { %>
+<div class="search-bar">
+  <input type="text" placeholder="Product search karein..." oninput="liveSearch(this, '.product-card', 'no-product-results')">
+</div>
+<% } %>
+
+<div class="product-grid">
+  <% if (items.length === 0) { %>
+    <p class="empty-msg">Is shop mein abhi koi product nahi hai.</p>
+  <% } %>
+  <p class="no-results-msg" id="no-product-results">Koi product is naam se nahi mila.</p>
+  <% items.forEach(p => { %>
+    <div class="product-card" data-search="<%= p.name.toLowerCase() %>">
+      <div class="product-pic">
+        <% if (p.pic) { %><img src="<%= p.pic %>"><% } else { %>📦<% } %>
+      </div>
+      <div class="product-name"><%= p.name %></div>
+      <% if (p.unit) { %><span class="product-unit"><%= p.unit %></span><% } %>
+      <% if (p.discount > 0) { %>
+        <span class="discount-badge"><%= p.discount %>% OFF</span>
+        <div class="product-price">
+          <span class="price-original">Rs. <%= p.price %></span>
+          <span class="price-final">Rs. <%= Math.round(p.price * (1 - p.discount / 100) * 100) / 100 %></span>
+        </div>
+      <% } else { %>
+        <div class="product-price">Rs. <%= p.price %></div>
+      <% } %>
+      <% if (p.inStock === false) { %>
+        <span class="stock-badge out">❌ Out of Stock</span>
+        <button type="button" class="btn-primary small" disabled>Tokri Mein Dalein</button>
+      <% } else { %>
+        <form method="POST" action="/customer/cart/add">
+          <input type="hidden" name="productId" value="<%= p.id %>">
+          <input type="hidden" name="shopId" value="<%= shop.id %>">
+          <button type="submit" class="btn-primary small">Tokri Mein Dalein</button>
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>

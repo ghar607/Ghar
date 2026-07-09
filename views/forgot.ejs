@@ -1,0 +1,49 @@
+<%- include('partials/header', {title: 'Forgot Password'}) %>
+
+<div class="form-card">
+  <h2>Password Bhool Gaye?</h2>
+  <% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+
+  <% if (step === 'phone') { %>
+    <form method="POST" action="/forgot/send-otp">
+      <input type="hidden" name="role" value="<%= role %>">
+      <label>Registered Phone Number</label>
+      <input type="text" name="phone" placeholder="03xxxxxxxxx" required>
+      <button type="submit" class="btn-primary">OTP Bhejein</button>
+    </form>
+  <% } else { %>
+    <% if (otpDemo) { %>
+      <p class="otp-demo">Demo OTP (real SMS gateway attach hone tak yahan dikhaya ja raha hai): <strong><%= otpDemo %></strong></p>
+    <% } %>
+    <form method="POST" action="/forgot/reset">
+      <input type="hidden" name="role" value="<%= role %>">
+      <input type="hidden" name="phone" value="<%= phone %>">
+      <label>OTP Code</label>
+      <input type="text" name="otp" required>
+      <label>Naya Password</label>
+      <input type="password" name="newPassword" minlength="6" required>
+      <p class="note">Kam se kam 6 hindse, jin mein letters aur numbers dono shamil hon.</p>
+      <label>Confirm Naya Password</label>
+      <input type="password" name="confirmNewPassword" minlength="6" required>
+      <button type="submit" class="btn-primary">Password Reset Karein</button>
+    </form>
+  <% } %>
+  <a href="/login?role=<%= role %>" class="back-link">← Login par wapis</a>
+  <a href="/forgot-username?role=<%= role %>" class="back-link">Phone number bhool gaye?</a>
+</div>
+
+<script>
+  const resetForm = document.querySelector('form[action="/forgot/reset"]');
+  if (resetForm) {
+    resetForm.addEventListener('submit', function (e) {
+      const pw = this.querySelector('input[name="newPassword"]');
+      const cpw = this.querySelector('input[name="confirmNewPassword"]');
+      if (pw.value !== cpw.value) {
+        e.preventDefault();
+        alert('Password aur Confirm Password match nahi karte.');
+      }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

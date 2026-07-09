@@ -1,0 +1,18 @@
+<%- include('partials/header', {title: 'Order Placed'}) %>
+
+<div class="form-card center-card">
+  <span class="big-emoji">🎉</span>
+  <h2>Order Bhej Diya Gaya!</h2>
+  <p>Order #<%= order.id %> — Total: Rs. <%= order.total %></p>
+  <p>Shopkeeper ko notify kar diya gaya hai. Confirm hote hi rider assign ho jayega.</p>
+
+  <% if (shop && shop.phone) { %>
+    <a href="https://wa.me/<%= toWaNumber(shop.phone) %>?text=<%= encodeURIComponent('Assalam-o-Alaikum, maine Ghar ki Zarurat par Order #' + order.id + ' place kiya hai. Total: Rs. ' + order.total + '. Delivery Address: ' + order.customerAddress) %>" target="_blank" class="whatsapp-btn">
+      <span class="whatsapp-icon">💬</span> Shopkeeper Ko WhatsApp Karein
+    </a>
+  <% } %>
+
+  <a href="/customer/orders" class="btn-primary">Mere Orders Dekhein</a>
+</div>
+
+<%- include('partials/footer') %>

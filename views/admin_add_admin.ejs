@@ -1,0 +1,37 @@
+<%- include('partials/header', {title: 'Add Admin'}) %>
+
+<div class="page-head">
+  <h2>Naya Admin Add Karein</h2>
+  <a href="/admin/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+<% if (success) { %><p class="otp-demo"><%= success %></p><% } %>
+
+<form method="POST" action="/admin/add-admin" class="form-card no-shadow">
+  <label>Naam</label>
+  <input type="text" name="name" required>
+  <label>Phone Number</label>
+  <input type="text" name="phone" placeholder="03xxxxxxxxx" required>
+  <label>Password</label>
+  <input type="password" name="password" minlength="6" required>
+  <p class="note">Kam se kam 6 hindse, jin mein letters aur numbers dono shamil hon.</p>
+  <label>Confirm Password</label>
+  <input type="password" name="confirmPassword" minlength="6" required>
+  <button type="submit" class="btn-primary">Admin Account Banayein</button>
+</form>
+
+<script>
+document.querySelector('form[action="/admin/add-admin"]').addEventListener('submit', function (e) {
+  const pw = this.querySelector('input[name="password"]');
+  const cpw = this.querySelector('input[name="confirmPassword"]');
+  if (pw.value !== cpw.value) {
+    e.preventDefault();
+    alert('Password aur Confirm Password match nahi karte.');
+  }
+});
+</script>
+
+<p class="note">Yeh naya account seedha "approved" admin ki tarah ban jayega aur foran login kar sakega. Sirf un logon ko access dein jin par aap poora bharosa karte hain.</p>
+
+<%- include('partials/footer') %>

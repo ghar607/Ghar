@@ -1,0 +1,41 @@
+<%- include('partials/header', {title: 'Locations Manage Karein'}) %>
+
+<div class="page-head">
+  <h2>Locations</h2>
+  <a href="/admin/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+<% if (success) { %><p class="otp-demo"><%= success %></p><% } %>
+
+<p class="note">Yahan se add ki gayi location signup list mein sabko dikhegi. Location kabhi delete nahi hoti — sirf naam update kiya ja sakta hai.</p>
+
+<h3 style="margin-top:16px;">Nayi Location Add Karein</h3>
+<form method="POST" action="/admin/locations/add" class="form-card no-shadow" style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+  <div style="flex:1; min-width:180px;">
+    <label>Location Ka Naam</label>
+    <input type="text" name="name" placeholder="Masalan: Gulshan-e-Iqbal" required>
+  </div>
+  <button type="submit" class="btn-primary small">Add Karein</button>
+</form>
+
+<h3 style="margin-top:20px;">Mojooda Locations (<%= locations.length %>)</h3>
+<% if (locations.length === 0) { %>
+  <p class="empty-msg">Abhi tak koi location add nahi hui.</p>
+<% } else { %>
+<div class="search-bar">
+  <input type="text" placeholder="Location search karein..." oninput="liveSearch(this, '.location-row', 'no-location-results')">
+</div>
+<p class="no-results-msg" id="no-location-results">Koi location is naam se nahi mili.</p>
+<% } %>
+<% locations.forEach(l => { %>
+  <div class="location-row" data-search="<%= l.name.toLowerCase() %>">
+    <form method="POST" action="/admin/locations/<%= l.id %>/update">
+      <input type="text" name="name" value="<%= l.name %>" required>
+      <button type="submit" class="btn-primary small">Update</button>
+    </form>
+    <span class="location-lock">🔒 delete nahi ho sakti</span>
+  </div>
+<% }) %>
+
+<%- include('partials/footer') %>

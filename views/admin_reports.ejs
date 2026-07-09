@@ -1,0 +1,48 @@
+<%- include('partials/header', {title: 'Sales Report'}) %>
+
+<div class="page-head">
+  <h2>Sales Report</h2>
+  <a href="/admin/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<p class="note">Yeh report sirf <strong>delivered</strong> orders par mabni hai. Total delivered orders: <%= totalDelivered %></p>
+
+<h3>Monthly Sales</h3>
+<% if (monthly.length === 0) { %>
+  <p class="empty-msg">Abhi tak koi delivered order nahi hai.</p>
+<% } else { %>
+<div class="report-table">
+  <div class="report-row report-head">
+    <span>Month</span><span>Orders</span><span>Total Sales</span><span>Commission</span>
+  </div>
+  <% monthly.forEach(m => { %>
+    <div class="report-row">
+      <span><%= m.month %></span>
+      <span><%= m.orders %></span>
+      <span>Rs. <%= m.total %></span>
+      <span>Rs. <%= m.adminCommission %></span>
+    </div>
+  <% }) %>
+</div>
+<% } %>
+
+<h3>Daily Sales</h3>
+<% if (daily.length === 0) { %>
+  <p class="empty-msg">Abhi tak koi delivered order nahi hai.</p>
+<% } else { %>
+<div class="report-table">
+  <div class="report-row report-head">
+    <span>Date</span><span>Orders</span><span>Total Sales</span><span>Commission</span>
+  </div>
+  <% daily.forEach(d => { %>
+    <div class="report-row">
+      <span><%= d.date %></span>
+      <span><%= d.orders %></span>
+      <span>Rs. <%= d.total %></span>
+      <span>Rs. <%= d.adminCommission %></span>
+    </div>
+  <% }) %>
+</div>
+<% } %>
+
+<%- include('partials/footer') %>

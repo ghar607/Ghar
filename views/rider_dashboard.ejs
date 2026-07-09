@@ -1,0 +1,97 @@
+<%- include('partials/header', {title: 'Rider Dashboard'}) %>
+
+<% if (pendingDeliveries.length > 0) { %>
+  <div class="pending-reminder">
+    <strong>⏰ <%= pendingDeliveries.length %> order<%= pendingDeliveries.length > 1 ? 's' : '' %> abhi tak deliver nahi hua<%= pendingDeliveries.length > 1 ? 'e' : '' %>!</strong>
+    <ul>
+      <% pendingDeliveries.forEach(o => { %>
+        <li>Order #<%= o.id %> — <%= o.shop ? o.shop.name : '-' %> → <%= o.customerName %> <span class="status-badge status-<%= o.status %>"><%= o.status %></span></li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>
+
+<h2>Mera Commission Report</h2>
+<div class="commission-report">
+  <div class="commission-box commission-paid">
+    <span class="commission-label">✅ Paid</span>
+    <span class="commission-amount">Rs. <%= paidCommission %></span>
+  </div>
+  <div class="commission-box commission-pending">
+    <span class="commission-label">⏳ Pending</span>
+    <span class="commission-amount">Rs. <%= pendingCommission %></span>
+  </div>
+</div>
+<p class="note">Yeh sirf aapka apna commission report hai — delivered orders par mabni, jab admin aapko amount bhejega to wo "Paid" mein shift ho jayega.</p>
+
+<h2>Mere Assigned Orders</h2>
+
+<% 
+  const activeOrders = orders.filter(o => !['delivered', 'cancelled'].includes(o.status));
+  const historyOrders = orders.filter(o => ['delivered', 'cancelled'].includes(o.status));
+%>
+
+<% if (orders.length === 0) { %>
+  <p class="empty-msg">Abhi koi order assign nahi hua.</p>
+<% } else { %>
+<div class="search-bar">
+  <input type="text" placeholder="Order #, shop ya customer ka naam search karein..." oninput="liveSearch(this, '.order-card', 'no-order-results')">
+</div>
+<p class="no-results-msg" id="no-order-results">Koi order is naam se nahi mila.</p>
+<% } %>
+
+<h3>Active Orders</h3>
+<% if (orders.length > 0 && activeOrders.length === 0) { %>
+  <p class="empty-msg">Abhi koi active order nahi hai.</p>
+<% } %>
+<% activeOrders.forEach(o => { %>
+  <div class="order-card" data-search="<%= (o.id + ' ' + (o.shop ? o.shop.name : '') + ' ' + o.customerName + ' ' + o.status).toLowerCase() %>">
+    <div class="order-top">
+      <strong>Order #<%= o.id %></strong>
+      <span class="status-badge status-<%= o.status %>"><%= o.status %></span>
+    </div>
+    <p><strong>Shop:</strong> <%= o.shop ? o.shop.name : '-' %> — <%= o.shop ? o.shop.address : '' %></p>
+    <p><strong>Deliver Karna Hai:</strong> <%= o.customerName %>, <%= o.customerAddress %>, <%= o.customerPhone %></p>
+    <p>Total: Rs. <%= o.total %> | Payment: <%= o.paymentMethod %></p>
+    <a href="https://wa.me/<%= toWaNumber(o.customerPhone) %>?text=<%= encodeURIComponent('Assalam-o-Alaikum ' + o.customerName + ', main aapka Ghar ki Zarurat rider hoon. Order #' + o.id + ' ke baray mein rabta kar raha hoon.') %>" target="_blank" class="whatsapp-btn small">
+      <span class="whatsapp-icon">💬</span> Customer Ko WhatsApp
+    </a>
+
+    <% if (o.status === 'assigned') { %>
+      <form method="POST" action="/rider/order/<%= o.id %>/pickup">
+        <button class="btn-primary small">Pickup Confirm Karein</button>
+      </form>
+    <% } else if (o.status === 'picked') { %>
+      <form method="POST" action="/rider/order/<%= o.id %>/deliver">
+        <button class="btn-primary small">Delivery Confirm Karein</button>
+      </form>
+    <% } %>
+  </div>
+<% }) %>
+
+<h3>History (Guzashta Orders)</h3>
+<% if (orders.length > 0 && historyOrders.length === 0) { %>
+  <p class="empty-msg">Abhi koi purana order nahi hai.</p>
+<% } %>
+<% historyOrders.forEach(o => { %>
+  <div class="order-card" data-search="<%= (o.id + ' ' + (o.shop ? o.shop.name : '') + ' ' + o.customerName + ' ' + o.status).toLowerCase() %>">
+    <div class="order-top">
+      <strong>Order #<%= o.id %></strong>
+      <span class="status-badge status-<%= o.status %>"><%= o.status %></span>
+    </div>
+    <p><strong>Shop:</strong> <%= o.shop ? o.shop.name : '-' %> — <%= o.shop ? o.shop.address : '' %></p>
+    <p><strong>Deliver Karna Tha:</strong> <%= o.customerName %>, <%= o.customerAddress %>, <%= o.customerPhone %></p>
+    <p>Total: Rs. <%= o.total %> | Payment: <%= o.paymentMethod %></p>
+    <% if (o.status === 'delivered') { %>
+      <p>Mera Commission: Rs. <%= o.riderCommission %>
+        <% if (o.riderPayoutSent) { %>
+          <span class="pay-badge pay-green">✅ Paid</span>
+        <% } else { %>
+          <span class="pay-badge pay-red">⏳ Pending</span>
+        <% } %>
+      </p>
+    <% } %>
+  </div>
+<% }) %>
+
+<%- include('partials/footer') %>

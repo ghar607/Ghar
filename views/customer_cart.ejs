@@ -1,0 +1,95 @@
+<%- include('partials/header', {title: 'Cart'}) %>
+
+<h2>Aapki Tokri</h2>
+
+<% if (typeof error !== 'undefined' && error) { %><p class="error-msg"><%= error %></p><% } %>
+
+<% if (items.length === 0) { %>
+  <p class="empty-msg">Tokri khali hai. <a href="/customer/shops">Shops dekhein</a></p>
+<% } else { %>
+  <div class="cart-list">
+    <% items.forEach(i => { %>
+      <div class="cart-row">
+        <span class="cart-item-name"><%= i.name %><% if (i.unit) { %> · <%= i.unit %><% } %> (Rs. <%= i.price %>)</span>
+        <form method="POST" action="/customer/cart/update" class="qty-form">
+          <input type="hidden" name="productId" value="<%= i.id %>">
+          <button name="action" value="dec">−</button>
+          <span><%= i.qty %></span>
+          <button name="action" value="inc">+</button>
+        </form>
+        <span class="cart-line-total">Rs. <%= i.lineTotal %></span>
+        <form method="POST" action="/customer/cart/update">
+          <input type="hidden" name="productId" value="<%= i.id %>">
+          <button name="action" value="remove" class="remove-btn">✕</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+  <div class="cart-total-box">Total: Rs. <%= total %></div>
+
+  <h3>Order Details</h3>
+  <form method="POST" action="/customer/order" class="form-card no-shadow">
+    <label>Apna Naam</label>
+    <input type="text" name="name" required>
+    <label>Delivery Address</label>
+    <input type="text" name="address" required>
+    <label>Phone Number</label>
+    <input type="text" name="phone" required>
+
+    <label>Payment Method</label>
+    <select name="paymentMethod" id="paymentMethod" required onchange="togglePayInfo()">
+      <% if (shop && shop.acceptCOD) { %><option value="COD">Cash on Delivery</option><% } %>
+      <% if (shop && shop.acceptJazzCash) { %><option value="JazzCash">JazzCash (Shop ko Direct)</option><% } %>
+      <% if (shop && shop.acceptEasyPaisa) { %><option value="EasyPaisa">EasyPaisa (Shop ko Direct)</option><% } %>
+    </select>
+    <% if (!shop || (!shop.acceptCOD && !shop.acceptJazzCash && !shop.acceptEasyPaisa)) { %>
+      <p class="error-msg">Is shop ne abhi tak koi payment method set nahi ki.</p>
+    <% } %>
+
+    <div id="payInfo" style="display:none;">
+      <p class="note" id="payNumber"></p>
+      <div class="qr-box">
+        <img id="qrImg" src="" alt="Scan to Pay QR Code">
+        <p class="note">Shop ki JazzCash / EasyPaisa app se yeh code scan karein, ya number par manually bhej dein. Yeh payment seedha shopkeeper ke account mein jayegi.</p>
+      </div>
+      <label>Transaction ID (payment karne ke baad) *</label>
+      <input type="text" name="transactionId" id="transactionId">
+      <p class="note">Pehle upar diye shopkeeper ke number ya QR par payment karein, phir yahan Transaction ID zaroor likhein — is ke baghair order nahi jayega. Shopkeeper aapki payment khud verify kare ga.</p>
+    </div>
+
+    <button type="submit" class="btn-primary">Order Bhejein</button>
+  </form>
+<% } %>
+
+<script>
+  const shopJazzcash = "<%= shop ? shop.jazzcashNumber : '' %>";
+  const shopEasypaisa = "<%= shop ? shop.easypaisaNumber : '' %>";
+  const qrData = {
+    JazzCash: "JazzCash Payment%0ANumber: " + shopJazzcash + "%0AAmount: Rs. <%= total %>%0AGhar ki Zarurat",
+    EasyPaisa: "EasyPaisa Payment%0ANumber: " + shopEasypaisa + "%0AAmount: Rs. <%= total %>%0AGhar ki Zarurat"
+  };
+  function togglePayInfo(){
+    const method = document.getElementById('paymentMethod').value;
+    const box = document.getElementById('payInfo');
+    const num = document.getElementById('payNumber');
+    const qrImg = document.getElementById('qrImg');
+    const txnField = document.getElementById('transactionId');
+    if(method === 'JazzCash'){
+      box.style.display='block';
+      num.textContent = 'Shopkeeper ka JazzCash Number: ' + shopJazzcash;
+      qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + qrData.JazzCash;
+      txnField.required = true;
+    } else if(method === 'EasyPaisa'){
+      box.style.display='block';
+      num.textContent = 'Shopkeeper ka EasyPaisa Number: ' + shopEasypaisa;
+      qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + qrData.EasyPaisa;
+      txnField.required = true;
+    } else {
+      box.style.display='none';
+      txnField.required = false;
+    }
+  }
+  togglePayInfo();
+</script>
+
+<%- include('partials/footer') %>

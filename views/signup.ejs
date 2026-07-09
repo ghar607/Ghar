@@ -1,0 +1,88 @@
+<%- include('partials/header', {title: 'Sign Up'}) %>
+
+<div class="form-card">
+  <h2>Sign Up — <span class="role-tag"><%= role %></span></h2>
+  <% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+  <form method="POST" action="/signup" enctype="multipart/form-data">
+    <input type="hidden" name="role" value="<%= role %>">
+
+    <label>Poora Naam</label>
+    <input type="text" name="name" required>
+
+    <label>Phone Number</label>
+    <input type="text" name="phone" placeholder="03xxxxxxxxx" pattern="^(03\d{9}|(\+92|0092|92)3\d{9})$" title="Sahi Pakistani phone number likhein, masalan: 03xxxxxxxxx" required>
+
+    <label>Location</label>
+    <% if (locations.length === 0) { %>
+      <p class="error-msg">Abhi tak koi location admin ne add nahi ki. Signup se pehle admin se rabta karein.</p>
+    <% } else { %>
+      <select name="locationId" id="locationId" required>
+        <option value="">-- Location Chunein --</option>
+        <% locations.forEach(l => { %>
+          <option value="<%= l.id %>"><%= l.name %></option>
+        <% }) %>
+      </select>
+      <p class="note">Locations sirf admin add/update karta hai — nayi location khud add nahi ki ja sakti.</p>
+    <% } %>
+
+    <label>Address</label>
+    <input type="text" name="address" placeholder="Ghar/dukan ka pura address yahan khud likhein (hint address)" required>
+
+    <label>Password</label>
+    <input type="password" name="password" minlength="6" required>
+    <p class="note">Kam se kam 6 hindse, jin mein letters aur numbers dono shamil hon (masalan: pass123).</p>
+
+    <label>Confirm Password</label>
+    <input type="password" name="confirmPassword" minlength="6" required>
+
+    <% if (role === 'shopkeeper') { %>
+      <hr>
+      <label>Shop Ka Naam</label>
+      <input type="text" name="shopName" required>
+      <label>Shop Category</label>
+      <input type="text" name="shopCategory" list="categorySuggestions" placeholder="Apni marzi se likhein, ya list se chunein" required>
+      <datalist id="categorySuggestions">
+        <option value="Madison / Pharmacy">
+        <option value="Fast Food">
+        <option value="Restaurant">
+        <option value="Hardware Shop">
+        <option value="Sabzi / Fruit Shop">
+        <option value="Grocery / Kirana">
+      </datalist>
+      <label>Shop Ki Tasveer</label>
+      <input type="file" name="shopPic" accept="image/*">
+    <% } %>
+
+    <% if (role === 'rider') { %>
+      <hr>
+      <label>Bike Number</label>
+      <input type="text" name="bikeNumber" required>
+      <label>Bike Registration Number</label>
+      <input type="text" name="bikeRegNumber" required>
+      <label>Apni Tasveer Upload Karein</label>
+      <input type="file" name="profilePic" accept="image/*" required>
+      <label>Bike Registration Card Ki Tasveer</label>
+      <input type="file" name="bikeRegPic" accept="image/*" required>
+      <p class="note">Shopkeeper aur Rider ka account admin approval ke baad hi active hoga.</p>
+    <% } %>
+
+    <button type="submit" class="btn-primary" <%= locations.length === 0 ? 'disabled' : '' %>>Account Banayein</button>
+  </form>
+  <div class="form-links">
+    <a href="/login?role=<%= role %>">Pehle se account hai? Login</a>
+  </div>
+  <a href="/" class="back-link">← Wapis jayein</a>
+</div>
+
+<script>
+document.querySelector('form[action="/signup"]').addEventListener('submit', function (e) {
+  const pw = this.querySelector('input[name="password"]');
+  const cpw = this.querySelector('input[name="confirmPassword"]');
+  if (pw.value !== cpw.value) {
+    e.preventDefault();
+    alert('Password aur Confirm Password match nahi karte.');
+  }
+});
+</script>
+
+<%- include('partials/footer') %>

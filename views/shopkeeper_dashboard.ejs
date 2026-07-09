@@ -1,0 +1,117 @@
+<%- include('partials/header', {title: 'Shopkeeper Dashboard'}) %>
+
+<div class="page-head">
+  <h2><%= shop ? shop.name : 'Aapki Shop' %></h2>
+  <a href="/shopkeeper/products" class="cart-link">📦 Products Manage Karein</a>
+</div>
+
+<% if (!shop) { %>
+  <p class="empty-msg">Shop profile nahi mili.</p>
+<% } %>
+
+<h3>Active Orders</h3>
+<% 
+  const activeOrders = orders.filter(o => !['delivered', 'cancelled'].includes(o.status));
+  const historyOrders = orders.filter(o => ['delivered', 'cancelled'].includes(o.status));
+%>
+<% if (orders.length === 0) { %>
+  <p class="empty-msg">Abhi koi order nahi aya.</p>
+<% } else { %>
+<div class="search-bar">
+  <input type="text" placeholder="Order #, customer ka naam ya number search karein..." oninput="liveSearch(this, '.order-card', 'no-order-results')">
+</div>
+<p class="no-results-msg" id="no-order-results">Koi order is naam se nahi mila.</p>
+<% } %>
+
+<% if (orders.length > 0 && activeOrders.length === 0) { %>
+  <p class="empty-msg">Abhi koi active order nahi hai.</p>
+<% } %>
+<% activeOrders.forEach(o => { %>
+  <div class="order-card" data-search="<%= (o.id + ' ' + o.customerName + ' ' + o.customerPhone + ' ' + o.status).toLowerCase() %>">
+    <div class="order-top">
+      <strong>Order #<%= o.id %></strong>
+      <span class="status-badge status-<%= o.status %>"><%= o.status %></span>
+    </div>
+    <p><%= o.customerName %> — <%= o.customerPhone %></p>
+    <p class="shop-address"><%= o.customerAddress %></p>
+    <a href="https://wa.me/<%= toWaNumber(o.customerPhone) %>?text=<%= encodeURIComponent('Assalam-o-Alaikum ' + o.customerName + ', aapka Order #' + o.id + ' Ghar ki Zarurat se: status - ' + o.status) %>" target="_blank" class="whatsapp-btn small">
+      <span class="whatsapp-icon">💬</span> Customer Ko WhatsApp
+    </a>
+    <ul class="order-items">
+      <% o.items.forEach(i => { %><li><%= i.name %><% if (i.unit) { %> (<%= i.unit %>)<% } %> × <%= i.qty %> — Rs. <%= i.price * i.qty %></li><% }) %>
+    </ul>
+    <p>Total: Rs. <%= o.total %> | Payment: <%= o.paymentMethod %><% if(o.transactionId) { %> (TxID: <%= o.transactionId %>)<% } %></p>
+    <% if (o.directPayment) { %>
+      <p class="note">Yeh payment seedha aapke account mein aayi hai. Delivery ke baad aapko commission (Rider Rs. <%= o.riderCommission %> + Admin Rs. <%= o.adminCommission %> = Rs. <%= o.commission %>) admin ko wapas bhejni hogi.</p>
+    <% } else { %>
+      <p class="note">Aapka Hissa (Commission Kaat Kar): Rs. <%= o.payoutAmount %>
+        <% if (o.payoutSent) { %> — ✅ Admin ne bhej diya hai<% } else { %> — ⏳ Delivery ke baad admin bhejega<% } %>
+      </p>
+    <% } %>
+
+    <% if (o.paymentMethod === 'COD') { %>
+      <span class="pay-badge pay-green">✅ Cash on Delivery</span>
+    <% } else if (o.paymentVerified) { %>
+      <span class="pay-badge pay-green">✅ Payment Verified (Aap ne)</span>
+    <% } else { %>
+      <span class="pay-badge pay-red">⏳ Customer ki Transaction ID check karein aur payment verify karein</span>
+      <form method="POST" action="/shopkeeper/order/<%= o.id %>/verify-payment">
+        <button class="btn-primary small">Payment Verify Karein (TxID: <%= o.transactionId %>)</button>
+      </form>
+    <% } %>
+
+    <% if (o.status === 'pending' && o.paymentVerified) { %>
+      <form method="POST" action="/shopkeeper/order/<%= o.id %>/confirm">
+        <button class="btn-primary small">Order Confirm Karein</button>
+      </form>
+    <% } else if (o.status === 'confirmed') { %>
+      <form method="POST" action="/shopkeeper/order/<%= o.id %>/assign" class="assign-form">
+        <select name="riderId" required>
+          <option value="">Rider Chunein</option>
+          <% riders.forEach(r => { %><option value="<%= r.id %>"><%= r.name %> (<%= r.bikeNumber %>)</option><% }) %>
+        </select>
+        <button class="btn-primary small">Rider Ko Forward Karein</button>
+      </form>
+    <% } %>
+  </div>
+<% }) %>
+
+<h3>History (Guzashta Orders)</h3>
+<% if (orders.length > 0 && historyOrders.length === 0) { %>
+  <p class="empty-msg">Abhi koi purana order nahi hai.</p>
+<% } %>
+<% historyOrders.forEach(o => { %>
+  <div class="order-card" data-search="<%= (o.id + ' ' + o.customerName + ' ' + o.customerPhone + ' ' + o.status).toLowerCase() %>">
+    <div class="order-top">
+      <strong>Order #<%= o.id %></strong>
+      <span class="status-badge status-<%= o.status %>"><%= o.status %></span>
+    </div>
+    <p><%= o.customerName %> — <%= o.customerPhone %></p>
+    <p class="shop-address"><%= o.customerAddress %></p>
+    <ul class="order-items">
+      <% o.items.forEach(i => { %><li><%= i.name %><% if (i.unit) { %> (<%= i.unit %>)<% } %> × <%= i.qty %> — Rs. <%= i.price * i.qty %></li><% }) %>
+    </ul>
+    <p>Total: Rs. <%= o.total %> | Payment: <%= o.paymentMethod %><% if(o.transactionId) { %> (TxID: <%= o.transactionId %>)<% } %></p>
+    <p class="note">Commission Tafseel: Rider Rs. <%= o.riderCommission %> + Admin Rs. <%= o.adminCommission %> = Total Rs. <%= o.commission %></p>
+
+    <% if (o.directPayment && o.status === 'delivered') { %>
+      <% if (o.commissionReceived) { %>
+        <span class="pay-badge pay-green">✅ Commission Admin Ko Mil Chuki (<%= new Date(o.commissionReceivedAt).toLocaleString() %>)</span>
+      <% } else if (o.commissionSent) { %>
+        <span class="pay-badge pay-red">⏳ Commission Bhej Di, Admin Confirm Karne Ka Intezaar (TxID: <%= o.commissionTransactionId %>)</span>
+      <% } else { %>
+        <form method="POST" action="/shopkeeper/order/<%= o.id %>/send-commission" class="form-card no-shadow">
+          <label>Admin Ko Commission (Rs. <%= o.commission %>) Bhejne Ke Baad Transaction ID</label>
+          <input type="text" name="transactionId" placeholder="Transaction ID" required>
+          <button type="submit" class="btn-primary small">Commission Bheji, Confirm Karein</button>
+        </form>
+      <% } %>
+    <% } else if (!o.directPayment) { %>
+      <p class="note">Aapka Hissa (Commission Kaat Kar): Rs. <%= o.payoutAmount %>
+        <% if (o.payoutSent) { %> — ✅ Admin ne bhej diya hai<% } else { %> — ⏳ Pending<% } %>
+      </p>
+    <% } %>
+  </div>
+<% }) %>
+
+<%- include('partials/footer') %>

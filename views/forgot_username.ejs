@@ -1,0 +1,27 @@
+<%- include('partials/header', {title: 'Phone Number Bhool Gaye'}) %>
+
+<div class="form-card">
+  <h2>Phone Number Bhool Gaye?</h2>
+  <% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+
+  <% if (matches) { %>
+    <p class="note">Aapke naam se milte julte account(s) mil gaye hain:</p>
+    <% matches.forEach(m => { %>
+      <div class="location-row">
+        <span><strong><%= m.name %></strong> — <%= m.maskedPhone %></span>
+      </div>
+    <% }) %>
+    <p class="note">Agar yeh number aapka nahi hai, ya aapko poora number chahiye, to admin se WhatsApp par rabta karein (footer mein button maujood hai).</p>
+  <% } else { %>
+    <form method="POST" action="/forgot-username">
+      <input type="hidden" name="role" value="<%= role %>">
+      <label>Registered Poora Naam</label>
+      <input type="text" name="name" required>
+      <button type="submit" class="btn-primary">Phone Number Talash Karein</button>
+    </form>
+  <% } %>
+
+  <a href="/login?role=<%= role %>" class="back-link">← Login par wapis</a>
+</div>
+
+<%- include('partials/footer') %>

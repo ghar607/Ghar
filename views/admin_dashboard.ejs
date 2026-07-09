@@ -1,0 +1,25 @@
+<%- include('partials/header', {title: 'Admin Dashboard'}) %>
+
+<h2>Admin Dashboard</h2>
+
+<div class="stats-grid">
+  <div class="stat-box"><span><%= stats.customers %></span>Customers</div>
+  <div class="stat-box"><span><%= stats.shopkeepers %></span>Shopkeepers</div>
+  <div class="stat-box"><span><%= stats.riders %></span>Riders</div>
+  <div class="stat-box highlight"><span><%= stats.pendingApprovals %></span>Pending Approvals</div>
+  <div class="stat-box"><span><%= stats.totalOrders %></span>Total Orders</div>
+  <div class="stat-box"><span><%= stats.delivered %></span>Delivered</div>
+</div>
+
+<div class="admin-nav">
+  <a href="/admin/users" class="role-card">👥 Users Manage Karein</a>
+  <a href="/admin/orders" class="role-card">📦 Sare Orders Dekhein</a>
+  <a href="/admin/commission" class="role-card">💰 Rider & Admin Commission</a>
+  <a href="/admin/locations" class="role-card">📍 Locations Manage Karein</a>
+  <a href="/admin/reports" class="role-card">📊 Sales Report (Daily/Monthly)</a>
+  <a href="/admin/banners" class="role-card">🖼️ Home Page Slider Manage Karein</a>
+  <a href="/admin/backup" class="role-card">💾 Data Backup</a>
+</div>
+<p class="note">Naya admin add karne ka button ab har page ke top-left corner mein <strong>+ Admin</strong> ke naam se maujood hai.</p>
+
+<%- include('partials/footer') %>

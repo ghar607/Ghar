@@ -1,0 +1,49 @@
+<%- include('partials/header', {title: 'Shops'}) %>
+
+<div class="page-head">
+  <h2>Sari Shops</h2>
+  <a href="/customer/cart" class="cart-link">🧺 Cart</a>
+  <a href="/customer/orders" class="cart-link">📦 Mere Orders</a>
+</div>
+
+<% if (locations.length > 0) { %>
+<form method="GET" action="/customer/shops" class="location-filter">
+  <label for="locationId">📍 Location Se Filter Karein:</label>
+  <select name="locationId" id="locationId" onchange="this.form.submit()">
+    <option value="">Sab Locations</option>
+    <% locations.forEach(l => { %>
+      <option value="<%= l.id %>" <%= String(selectedLocation) === String(l.id) ? 'selected' : '' %>><%= l.name %></option>
+    <% }) %>
+  </select>
+</form>
+<% } %>
+
+<% if (shops.length > 0) { %>
+<div class="search-bar">
+  <input type="text" placeholder="Shop ka naam, category ya location search karein..." oninput="liveSearch(this, '.shop-card', 'no-shop-results')">
+</div>
+<% } %>
+
+<div class="shop-grid">
+  <% if (shops.length === 0) { %>
+    <p class="empty-msg">Is filter ke mutabiq koi shop available nahi hai.</p>
+  <% } %>
+  <p class="no-results-msg" id="no-shop-results">Koi shop is naam se nahi mili.</p>
+  <% shops.forEach(shop => { %>
+    <% const rating = shopRatingInfo(shop); %>
+    <a href="/customer/shop/<%= shop.id %>" class="shop-card" data-search="<%= (shop.name + ' ' + (shop.category||'') + ' ' + (shop.locationName||'')).toLowerCase() %>">
+      <div class="shop-pic">
+        <% if (shop.pic) { %><img src="<%= shop.pic %>"><% } else { %>🏪<% } %>
+      </div>
+      <div class="shop-info">
+        <h3><%= shop.name %></h3>
+        <span class="shop-cat"><%= shop.category %></span>
+        <p class="shop-address"><%= shop.address %></p>
+        <% if (shop.locationName) { %><span class="location-badge">📍 <%= shop.locationName %></span><% } %>
+        <% if (rating.avg) { %><span class="rating-badge">⭐ <%= rating.avg %> (<%= rating.count %>)</span><% } else { %><span class="rating-badge no-rating">Abhi koi review nahi</span><% } %>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>

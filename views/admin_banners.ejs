@@ -1,0 +1,44 @@
+<%- include('partials/header', {title: 'Home Page Slider'}) %>
+
+<div class="page-head">
+  <h2>Home Page Slider</h2>
+  <a href="/admin/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<p class="note">Yahan jo tasveerein add karenge, wo home page par auto-moving slider mein show hongi. Behtareen result ke liye landscape (chaudi) tasveerein use karein.</p>
+
+<% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+
+<h3>Nayi Slider Image Add Karein</h3>
+<form method="POST" action="/admin/banners/add" enctype="multipart/form-data" class="form-card no-shadow">
+  <label>Tasveer</label>
+  <input type="file" name="image" accept="image/*" required>
+
+  <label>Title (optional)</label>
+  <input type="text" name="title" placeholder="Masalan: Ramzan Grocery Sale">
+
+  <label>Link (optional)</label>
+  <input type="text" name="link" placeholder="Default: /login?role=customer">
+
+  <button type="submit" class="btn-primary">Slider Mein Add Karein</button>
+</form>
+
+<h3>Mojooda Slider Images (<%= banners.length %>)</h3>
+<% if (banners.length === 0) { %>
+  <p class="empty-msg">Abhi tak koi slider image add nahi hui. Upar se add karein.</p>
+<% } else { %>
+<div class="banner-admin-grid">
+  <% banners.forEach(b => { %>
+    <div class="banner-admin-card">
+      <div class="banner-admin-pic"><img src="<%= b.image %>" alt="Slider image"></div>
+      <p class="banner-admin-title"><%= b.title || '(bila title)' %></p>
+      <p class="note">Link: <%= b.link %></p>
+      <form method="POST" action="/admin/banners/<%= b.id %>/delete" onsubmit="return confirm('Yeh slider image delete karna chahte hain?')">
+        <button type="submit" class="remove-btn">Delete</button>
+      </form>
+    </div>
+  <% }) %>
+</div>
+<% } %>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,103 @@
+<%- include('partials/header', {title: 'Manage Users'}) %>
+
+<div class="page-head">
+  <h2>Sare Users</h2>
+  <a href="/admin/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<div class="role-tabs">
+  <a href="/admin/users" class="role-tab <%= activeRole === 'all' ? 'active' : '' %>">Sab (<%= counts.all %>)</a>
+  <a href="/admin/users?role=customer" class="role-tab <%= activeRole === 'customer' ? 'active' : '' %>">🧑 Customers (<%= counts.customer %>)</a>
+  <a href="/admin/users?role=shopkeeper" class="role-tab <%= activeRole === 'shopkeeper' ? 'active' : '' %>">🏪 Shopkeepers (<%= counts.shopkeeper %>)</a>
+  <a href="/admin/users?role=rider" class="role-tab <%= activeRole === 'rider' ? 'active' : '' %>">🏍️ Riders (<%= counts.rider %>)</a>
+</div>
+
+<% if (users.length > 0) { %>
+<div class="search-bar">
+  <input type="text" placeholder="Naam, phone, role ya location search karein..." oninput="liveSearch(this, '.order-card', 'no-user-results')">
+</div>
+<p class="no-results-msg" id="no-user-results">Koi user is naam se nahi mila.</p>
+<% } else { %>
+<p class="empty-msg">Is category mein koi user nahi hai.</p>
+<% } %>
+
+<% users.forEach(u => { %>
+  <div class="order-card" data-search="<%= (u.name + ' ' + u.phone + ' ' + u.role + ' ' + (u.locationName||'') + ' ' + u.status).toLowerCase() %>">
+    <div class="order-top">
+      <strong><%= u.name %></strong>
+      <span class="status-badge status-<%= u.status %>"><%= u.status %></span>
+    </div>
+    <p><%= u.role %> | <%= u.phone %> | <%= u.address || '-' %></p>
+    <% if (u.locationName) { %><span class="location-badge">📍 <%= u.locationName %></span><% } %>
+
+    <% if (u.role === 'shopkeeper') { %>
+      <% if (u.shop) { %>
+        <div class="shop-detail-box">
+          <p><strong>Shop:</strong> <%= u.shop.name %></p>
+          <p><strong>Category:</strong> <%= u.shop.category %></p>
+          <p><strong>Shop Address:</strong> <%= u.shop.address %></p>
+          <p><strong>Shop Phone:</strong> <%= u.shop.phone %></p>
+        </div>
+        <% if (u.shop.pic) { %>
+          <div class="doc-row">
+            <div class="doc-thumb-wrap">
+              <img class="doc-thumb" src="<%= u.shop.pic %>" onclick="openLightbox('<%= u.shop.pic %>')">
+              <div>Shop Pic</div>
+            </div>
+          </div>
+        <% } %>
+      <% } else { %>
+        <p class="note">Is shopkeeper ki shop record nahi mili.</p>
+      <% } %>
+    <% } %>
+
+    <% if (u.role === 'rider') { %>
+      <p>Bike: <%= u.bikeNumber %> | Reg#: <%= u.bikeRegNumber %></p>
+      <div class="doc-row">
+        <% if (u.profilePic) { %>
+          <div class="doc-thumb-wrap">
+            <img class="doc-thumb" src="<%= u.profilePic %>" onclick="openLightbox('<%= u.profilePic %>')">
+            <div>Profile</div>
+          </div>
+        <% } %>
+        <% if (u.bikeRegPic) { %>
+          <div class="doc-thumb-wrap">
+            <img class="doc-thumb" src="<%= u.bikeRegPic %>" onclick="openLightbox('<%= u.bikeRegPic %>')">
+            <div>Bike Reg</div>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+
+    <div class="admin-actions">
+      <% if (u.status !== 'approved') { %>
+        <form method="POST" action="/admin/user/<%= u.id %>/approve">
+          <button class="btn-primary small">Approve</button>
+        </form>
+      <% } %>
+      <% if (u.status !== 'blocked') { %>
+        <form method="POST" action="/admin/user/<%= u.id %>/block">
+          <button class="remove-btn">Block</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+<% }) %>
+
+<!-- Lightbox for viewing pics full-size -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
+  <img id="lightbox-img" src="">
+</div>
+<script>
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(e) {
+  e.stopPropagation();
+  document.getElementById('lightbox').classList.remove('open');
+}
+</script>
+
+<%- include('partials/footer') %>

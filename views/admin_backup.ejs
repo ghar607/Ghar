@@ -1,0 +1,38 @@
+<%- include('partials/header', {title: 'Data Backup'}) %>
+
+<div class="page-head">
+  <h2>💾 Data Backup</h2>
+  <a href="/admin/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<p class="note">
+  Aapka sara data (users, shops, products, orders) hamesha <code>data/db.json</code> file mein khud-b-khud save hota rehta hai.
+  Neeche wala button dabane se us waqt ki ek alag copy <code>data/backups</code> folder mein bhi save ho jati hai —
+  taake purani cheezein mehfooz rahein aur zaroorat par download bhi ki ja sakein.
+</p>
+
+<% if (error) { %><p class="error-msg"><%= error %></p><% } %>
+<% if (success) { %><p class="otp-demo"><%= success %></p><% } %>
+
+<form method="POST" action="/admin/backup/create" class="form-card no-shadow">
+  <button type="submit" class="btn-primary">📥 Abhi Backup Banayein</button>
+</form>
+
+<h3>Mojooda Backups</h3>
+<% if (backups.length === 0) { %>
+  <p class="empty-msg">Abhi tak koi backup nahi bana. Upar wala button dabayein.</p>
+<% } else { %>
+  <div class="cart-list">
+    <% backups.forEach(b => { %>
+      <div class="cart-row">
+        <span class="cart-item-name"><%= b.name %><br><span class="note"><%= new Date(b.at).toLocaleString() %> · <%= Math.round(b.size / 1024) %> KB</span></span>
+        <a href="/admin/backup/download/<%= encodeURIComponent(b.name) %>" class="btn-primary small">Download</a>
+        <form method="POST" action="/admin/backup/<%= encodeURIComponent(b.name) %>/delete" onsubmit="return confirm('Yeh backup delete kar dein?');">
+          <button type="submit" class="remove-btn">Delete</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

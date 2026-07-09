@@ -1,0 +1,463 @@
+:root{
+  --green: #187B3D;
+  --green-dark: #0F5A2A;
+  --green-light: #EAF6EE;
+  --gold: #E0B94A;
+  --red: #C0392B;
+  --blue: #2E6F9E;
+  --white: #FFFFFF;
+  --bg: #F6F8F5;
+  --ink: #202420;
+  --line: #DDE4DA;
+  --font-display: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ font-family:var(--font-body); background:var(--bg); color:var(--ink); line-height:1.5; }
+a{ text-decoration:none; color:inherit; }
+h1, h2, h3, .brand{ font-family:var(--font-display); }
+
+/* Topbar */
+.topbar{
+  background: var(--green-dark); color:var(--white);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px; box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+.topbar-left{ display:flex; align-items:center; gap:10px; }
+.brand{ font-size:19px; font-weight:700; letter-spacing:-.2px; }
+.topbar-right{ display:flex; align-items:center; gap:14px; font-size:13px; }
+.logout-link{ background:var(--red); padding:6px 12px; border-radius:20px; }
+
+/* Top-left "Add Admin" quick button */
+.admin-add-btn{
+  display:flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg, #2EA354, var(--green-dark));
+  color:var(--white); padding:6px 12px 6px 8px; border-radius:20px;
+  font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 2px 6px rgba(0,0,0,.18); transition: all .15s ease;
+}
+.admin-add-btn:hover{ filter:brightness(1.1); transform:translateY(-1px); }
+.admin-add-icon{
+  width:18px; height:18px; border-radius:50%; background:rgba(255,255,255,.25);
+  display:flex; align-items:center; justify-content:center; font-size:14px; line-height:1;
+}
+.admin-add-label{ letter-spacing:.2px; }
+
+/* Top-left "Admin Login" button for guests — always clearly labeled */
+.admin-login-btn{
+  display:flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg, #D9463A, var(--red));
+  color:var(--white);
+  padding:6px 14px 6px 8px; border-radius:20px; font-size:12px; font-weight:800;
+  border:1px solid rgba(255,255,255,.35); box-shadow:0 2px 6px rgba(192,57,43,.35);
+  transition: all .15s ease;
+}
+.admin-login-btn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+.admin-login-icon{
+  width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.28);
+  display:flex; align-items:center; justify-content:center; font-size:12px; line-height:1;
+}
+.admin-login-label{ letter-spacing:.2px; }
+
+.page{ max-width:900px; margin:0 auto; padding:24px 16px 60px; }
+
+/* Hero */
+.hero-box{
+  text-align:center; padding:34px 20px; margin-top:6px; border-radius:20px;
+  background:linear-gradient(160deg, var(--green-light) 0%, #FFFFFF 65%);
+  border:1px solid var(--line);
+}
+.hero-eyebrow{
+  display:inline-block; background:var(--white); color:var(--green-dark);
+  border:1px solid var(--green); padding:5px 14px; border-radius:20px;
+  font-size:11px; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
+}
+.hero-box h1{ color:var(--green-dark); font-size:32px; font-weight:800; margin-top:14px; letter-spacing:-.3px; }
+.tagline{ color:var(--red); font-weight:700; margin-top:6px; font-size:15px; }
+.subtext{ color:#555; font-size:13.5px; margin-top:10px; max-width:480px; margin-inline:auto; }
+
+/* Feature strip (trust badges under hero) */
+.feature-strip{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; justify-content:center; }
+.feature-chip{
+  display:flex; align-items:center; gap:8px; background:var(--white); border:1px solid var(--line);
+  border-radius:24px; padding:9px 16px; font-size:12.5px; font-weight:600; color:var(--green-dark);
+  box-shadow:0 2px 6px rgba(15,90,42,.05);
+}
+.feature-icon{ font-size:15px; }
+
+/* Section titles */
+.section-title{ color:var(--green-dark); font-size:19px; font-weight:700; margin:26px 0 12px; text-align:center; }
+
+/* Banner slider — admin-uploaded images, auto-moving (signature home page element) */
+.banner-slider{
+  overflow:hidden; width:100%; margin:22px 0 4px; border-radius:18px;
+}
+.banner-track{
+  display:flex; gap:14px; width:max-content;
+  animation:bannerScroll 30s linear infinite;
+}
+.banner-slider:hover .banner-track{ animation-play-state:paused; }
+@keyframes bannerScroll{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
+.banner-slide{
+  position:relative; flex-shrink:0; width:min(78vw, 320px); height:170px;
+  border-radius:16px; overflow:hidden; box-shadow:0 6px 18px rgba(15,90,42,.14);
+  border:1px solid var(--line);
+}
+.banner-slide img{ width:100%; height:100%; object-fit:cover; display:block; }
+.banner-caption{
+  position:absolute; left:0; right:0; bottom:0; padding:10px 14px 9px;
+  background:linear-gradient(0deg, rgba(15,90,42,.88), rgba(15,90,42,0));
+  color:var(--white); font-size:13px; font-weight:700;
+}
+
+/* Category slider (auto-moving, home page) */
+.category-slider{
+  overflow:hidden; width:100%; margin:22px 0 4px; position:relative;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.category-track{
+  display:flex; gap:14px; width:max-content;
+  animation:categoryScroll 22s linear infinite;
+}
+.category-slider:hover .category-track{ animation-play-state:paused; }
+@keyframes categoryScroll{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
+.category-item{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  background:var(--white); border:1px solid var(--line); border-radius:14px;
+  padding:14px 20px; min-width:92px; text-align:center;
+  color:var(--green-dark); font-size:12px; font-weight:700; flex-shrink:0;
+  transition: all .15s ease;
+}
+.category-item:hover{ background:var(--green); color:var(--white); border-color:var(--green); }
+.category-item .cat-emoji{ font-size:26px; }
+
+/* Role selection — Customer featured on top (centered), Shopkeeper + Rider in a row below.
+   Cards look like tactile 3D buttons: a solid "base" shadow beneath each card that
+   compresses on press, giving real depth instead of a flat card. */
+.role-grid{ display:flex; flex-direction:column; gap:18px; margin-top:14px; max-width:460px; margin-inline:auto; }
+.role-card{
+  background:var(--white); border:1px solid var(--line); border-radius:18px;
+  padding:18px 18px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px;
+  color:var(--green-dark); text-decoration:none;
+  box-shadow:0 5px 0 rgba(15,90,42,.16), 0 10px 20px rgba(15,90,42,.10);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.role-card:hover{ transform:translateY(-3px); box-shadow:0 8px 0 rgba(15,90,42,.16), 0 16px 26px rgba(15,90,42,.14); }
+.role-card:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(15,90,42,.16), 0 4px 10px rgba(15,90,42,.12); }
+
+.role-icon-circle{
+  width:56px; height:56px; flex-shrink:0; border-radius:50%;
+  background:radial-gradient(circle at 32% 28%, #ffffff, var(--green-light) 60%);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.8), inset 0 -3px 6px rgba(15,90,42,.12), 0 3px 8px rgba(15,90,42,.18);
+  margin-bottom:4px; transition:all .15s ease;
+}
+.role-emoji{ font-size:26px; }
+.role-text{ display:flex; flex-direction:column; align-items:center; gap:3px; }
+.role-text strong{ font-size:17px; font-weight:800; letter-spacing:-.2px; }
+.role-sub{ font-size:12px; color:#6b756f; font-weight:600; }
+.role-tagline{ font-size:11px; color:var(--green-dark); font-weight:500; font-style:italic; margin-top:4px; max-width:220px; opacity:.85; }
+
+/* Customer card: bigger "hero" button, stands out on top */
+.role-card.featured{
+  background:linear-gradient(165deg, var(--green-light) 0%, #FFFFFF 75%);
+  border:2px solid var(--green); padding:30px 22px;
+  box-shadow:0 6px 0 var(--green-dark), 0 14px 26px rgba(15,90,42,.2);
+}
+.role-card.featured .role-icon-circle{
+  width:78px; height:78px;
+  background:radial-gradient(circle at 32% 28%, #4FCB80, var(--green) 65%);
+  box-shadow:inset 0 3px 5px rgba(255,255,255,.5), inset 0 -4px 8px rgba(0,0,0,.15), 0 6px 14px rgba(15,90,42,.35);
+}
+.role-card.featured .role-emoji{ font-size:36px; filter:drop-shadow(0 1px 1px rgba(0,0,0,.15)); }
+.role-card.featured .role-text strong{ font-size:22px; color:var(--green-dark); }
+.role-card.featured .role-sub{ font-size:13px; }
+.role-card.featured .role-tagline{ font-size:12px; max-width:260px; }
+.role-card.featured:hover{ transform:translateY(-4px); box-shadow:0 9px 0 var(--green-dark), 0 20px 32px rgba(15,90,42,.26); }
+.role-card.featured:active{ transform:translateY(4px); box-shadow:0 2px 0 var(--green-dark), 0 6px 12px rgba(15,90,42,.2); }
+
+/* Shopkeeper + Rider: one line, side by side, below the customer card */
+.role-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.role-row .role-card{ padding:20px 12px; }
+
+.role-row .role-card.shopkeeper{ box-shadow:0 5px 0 #B7902E, 0 10px 20px rgba(224,185,74,.22); }
+.role-row .role-card.shopkeeper .role-icon-circle{ background:radial-gradient(circle at 32% 28%, #FFF6DD, #F4DFA0 65%); }
+.role-row .role-card.shopkeeper:hover{ box-shadow:0 7px 0 #B7902E, 0 14px 24px rgba(224,185,74,.28); }
+.role-row .role-card.shopkeeper:active{ box-shadow:0 1px 0 #B7902E, 0 4px 10px rgba(224,185,74,.2); }
+
+.role-row .role-card.rider{ box-shadow:0 5px 0 #1F5170, 0 10px 20px rgba(46,111,158,.22); }
+.role-row .role-card.rider .role-icon-circle{ background:radial-gradient(circle at 32% 28%, #E4F1FA, #AFD5EC 65%); }
+.role-row .role-card.rider:hover{ box-shadow:0 7px 0 #1F5170, 0 14px 24px rgba(46,111,158,.28); }
+.role-row .role-card.rider:active{ box-shadow:0 1px 0 #1F5170, 0 4px 10px rgba(46,111,158,.2); }
+
+
+@media (min-width:600px){
+  .role-row .role-card{ padding:22px 16px; }
+}
+
+/* Forms */
+.form-card{
+  background:var(--white); border:1px solid var(--line); border-radius:14px;
+  padding:22px; max-width:420px; margin:20px auto; box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+.form-card.no-shadow{ box-shadow:none; margin:14px 0; max-width:100%; }
+.form-card h2{ color:var(--green-dark); margin-bottom:14px; text-align:center; }
+.role-tag{ color:var(--red); text-transform:capitalize; }
+.form-card label{ display:block; margin:12px 0 4px; font-size:13px; font-weight:600; }
+.form-card input, .form-card select{
+  width:100%; padding:10px; border:1px solid var(--line); border-radius:8px; font-size:14px;
+}
+.btn-primary{
+  width:100%; margin-top:18px; background:var(--green); color:var(--white); border:none;
+  padding:12px; border-radius:8px; font-weight:600; cursor:pointer; font-size:14px;
+}
+.btn-primary:hover{ background:var(--green-dark); }
+.btn-primary.small{ margin-top:8px; padding:8px; font-size:13px; width:auto; }
+.form-links{ display:flex; justify-content:space-between; margin-top:14px; font-size:12px; color:var(--green-dark); }
+.back-link{ display:inline-block; margin:14px 0; font-size:13px; color:var(--green-dark); }
+.error-msg{ background:#FBEAE8; color:var(--red); padding:10px; border-radius:8px; font-size:13px; margin-bottom:10px; }
+.note{ font-size:12px; color:#666; margin-top:8px; }
+.qr-box{ text-align:center; background:var(--bg); border:1px dashed var(--line); border-radius:10px; padding:14px; margin:10px 0; }
+.qr-box img{ width:170px; height:170px; border-radius:8px; background:var(--white); padding:6px; border:1px solid var(--line); }
+.otp-demo{ background:#FFF6E0; border:1px dashed #E0B94A; padding:10px; border-radius:8px; font-size:14px; margin-bottom:10px; }
+.center-card{ text-align:center; }
+.big-emoji{ font-size:44px; display:block; margin-bottom:10px; }
+
+/* Page head */
+.page-head{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+.page-head h2{ color:var(--green-dark); }
+
+/* Search bar */
+.search-bar{ position:relative; margin:14px 0; }
+.search-bar input{
+  width:100%; padding:11px 14px 11px 38px; border:1px solid var(--line); border-radius:24px;
+  font-size:14px; background:var(--white);
+}
+.search-bar input:focus{ outline:none; border-color:var(--green); }
+.search-bar::before{
+  content:"🔍"; position:absolute; left:13px; top:50%; transform:translateY(-50%); font-size:14px; opacity:.6;
+}
+.no-results-msg{ display:none; text-align:center; color:#777; font-size:13px; padding:14px; }
+
+/* Rider: pending delivery reminder banner */
+.pending-reminder{
+  background:#FFF6E5; border:1px solid #F0C060; border-radius:10px;
+  padding:12px 14px; margin:10px 0 18px; font-size:13px; color:#7a5200;
+}
+.pending-reminder strong{ display:block; margin-bottom:6px; font-size:14px; }
+.pending-reminder ul{ list-style:none; padding:0; margin:0; }
+.pending-reminder li{ padding:4px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+
+/* Rider: commission report boxes */
+.commission-report{ display:flex; gap:12px; flex-wrap:wrap; margin:10px 0 4px; }
+.commission-box{
+  flex:1; min-width:140px; border-radius:10px; padding:14px; text-align:center;
+}
+.commission-box .commission-label{ display:block; font-size:13px; font-weight:600; margin-bottom:6px; }
+.commission-box .commission-amount{ display:block; font-size:20px; font-weight:800; }
+.commission-paid{ background:#E5F6EA; color:var(--green-dark); }
+.commission-pending{ background:#FBEAE8; color:var(--red); }
+
+/* Admin payout box */
+.payout-box{
+  background:var(--bg); border:1px dashed var(--line); border-radius:10px;
+  padding:10px 12px; margin:10px 0; font-size:13px;
+}
+.payout-box .note{ margin-top:4px; }
+.payout-box form{ margin-top:6px; }
+
+/* Admin role tabs */
+.role-tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.role-tab{
+  background:var(--white); border:1px solid var(--line); color:var(--ink);
+  padding:8px 14px; border-radius:20px; font-size:13px; font-weight:600;
+}
+.role-tab.active{ background:var(--green); color:var(--white); border-color:var(--green); }
+.cart-link{ background:var(--green); color:var(--white); padding:8px 14px; border-radius:20px; font-size:13px; }
+
+/* Admin: home page slider (banner) management */
+.banner-admin-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-top:14px; }
+.banner-admin-card{
+  background:var(--white); border:1px solid var(--line); border-radius:12px; padding:12px;
+  display:flex; flex-direction:column; gap:6px;
+}
+.banner-admin-pic{ height:110px; border-radius:8px; overflow:hidden; background:var(--bg); }
+.banner-admin-pic img{ width:100%; height:100%; object-fit:cover; }
+.banner-admin-title{ font-weight:700; font-size:13px; color:var(--green-dark); }
+
+/* Shop / Product Grids */
+.shop-grid, .product-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; margin-top:14px; }
+.shop-card, .product-card{
+  background:var(--white); border:1px solid var(--line); border-radius:12px; padding:14px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.shop-pic, .product-pic{
+  height:90px; background:var(--bg); border-radius:8px; display:flex; align-items:center; justify-content:center;
+  font-size:34px; overflow:hidden;
+}
+.shop-pic img, .product-pic img{ width:100%; height:100%; object-fit:cover; }
+.shop-info h3{ font-size:15px; color:var(--green-dark); }
+.shop-cat{ font-size:11px; color:var(--red); text-transform:uppercase; font-weight:600; }
+.shop-address{ font-size:12px; color:#666; }
+.product-name{ font-weight:600; font-size:14px; }
+.product-price{ color:var(--green-dark); font-weight:700; font-size:14px; }
+.edit-form input, .edit-form select{ width:100%; margin-bottom:6px; padding:6px; border:1px solid var(--line); border-radius:6px; font-size:12px; }
+
+/* Cart */
+.cart-list{ margin-top:10px; }
+.cart-row{
+  display:flex; align-items:center; gap:10px; background:var(--white); border:1px solid var(--line);
+  border-radius:10px; padding:10px 14px; margin-bottom:8px; font-size:13px; flex-wrap:wrap;
+}
+.cart-item-name{ flex:1; }
+.qty-form{ display:flex; align-items:center; gap:8px; }
+.qty-form button{ width:24px; height:24px; border:1px solid var(--line); background:var(--bg); border-radius:6px; cursor:pointer; }
+.cart-line-total{ font-weight:600; color:var(--green-dark); }
+.remove-btn{ background:var(--red); color:var(--white); border:none; padding:6px 10px; border-radius:6px; font-size:12px; cursor:pointer; }
+.cart-total-box{
+  background:var(--green-dark); color:var(--white); padding:12px 16px; border-radius:10px;
+  font-weight:700; margin-top:10px; text-align:right;
+}
+
+/* Orders */
+.order-card{
+  background:var(--white); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px;
+}
+.order-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.order-items{ list-style:none; font-size:13px; margin:8px 0; color:#444; }
+.status-badge{ padding:4px 10px; border-radius:16px; font-size:11px; font-weight:700; text-transform:capitalize; color:var(--white); }
+.status-pending{ background:#E0A106; }
+.status-confirmed{ background:#2E86C1; }
+.status-assigned{ background:#8E44AD; }
+.status-picked{ background:#D35400; }
+.status-delivered{ background:var(--green); }
+.status-approved{ background:var(--green); }
+.status-blocked{ background:var(--red); }
+.status-cancelled{ background:#7f8c8d; }
+.assign-form{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.assign-form select{ padding:8px; border-radius:8px; border:1px solid var(--line); flex:1; }
+.doc-row{ display:flex; gap:10px; margin:8px 0; flex-wrap:wrap; }
+.doc-thumb{ width:70px; height:70px; object-fit:cover; border-radius:8px; border:1px solid var(--line); cursor:zoom-in; transition:transform .15s ease; }
+.doc-thumb:hover{ transform:scale(1.05); border-color:var(--green); }
+.doc-thumb-wrap{ text-align:center; font-size:10px; color:#666; }
+.admin-actions{ display:flex; gap:10px; margin-top:10px; }
+.location-badge{ display:inline-block; background:var(--bg); border:1px solid var(--line); color:var(--green-dark); padding:3px 10px; border-radius:14px; font-size:11px; font-weight:600; margin-top:4px; }
+.shop-detail-box{ background:var(--bg); border-radius:8px; padding:10px; margin:8px 0; font-size:12px; color:#444; }
+.shop-detail-box p{ margin:2px 0; }
+
+/* Lightbox for viewing pics full size */
+.lightbox-overlay{
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:999;
+  align-items:center; justify-content:center; padding:20px;
+}
+.lightbox-overlay.open{ display:flex; }
+.lightbox-overlay img{ max-width:100%; max-height:90vh; border-radius:8px; }
+.lightbox-close{
+  position:absolute; top:16px; right:20px; color:var(--white); font-size:30px;
+  cursor:pointer; line-height:1; background:none; border:none;
+}
+
+/* Locations admin page */
+.location-row{
+  display:flex; align-items:center; gap:10px; background:var(--white); border:1px solid var(--line);
+  border-radius:10px; padding:10px 12px; margin-bottom:8px; flex-wrap:wrap;
+}
+.location-row form{ display:flex; gap:8px; flex:1; min-width:180px; }
+.location-row input{ flex:1; padding:7px; border:1px solid var(--line); border-radius:6px; font-size:13px; }
+.location-lock{ font-size:11px; color:#999; }
+
+/* New-location toggle on signup */
+.location-toggle{ font-size:12px; color:var(--green-dark); font-weight:600; margin-top:6px; display:inline-block; cursor:pointer; }
+#newLocationBox{ display:none; margin-top:8px; }
+#newLocationBox.show{ display:block; }
+
+/* Admin dashboard */
+.stats-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:16px; }
+.stat-box{
+  background:var(--white); border:1px solid var(--line); border-radius:12px; padding:16px;
+  text-align:center; font-size:13px; color:#555;
+}
+.stat-box span{ display:block; font-size:26px; font-weight:700; color:var(--green-dark); }
+.stat-box.highlight span{ color:var(--red); }
+.admin-nav{ display:grid; gap:12px; margin-top:20px; }
+
+.pay-badge{ display:inline-block; padding:5px 12px; border-radius:16px; font-size:12px; font-weight:700; margin:6px 0; }
+.pay-green{ background:#E5F6EA; color:var(--green-dark); }
+.pay-red{ background:#FBEAE8; color:var(--red); }
+.empty-msg{ color:#777; font-size:14px; padding:20px 0; }
+
+/* Footer */
+.footer{
+  text-align:center; padding:20px; font-size:12px; color:#555; border-top:1px solid var(--line); margin-top:30px;
+}
+.footer a{ color:var(--green-dark); font-weight:600; }
+.whatsapp-btn{
+  display:inline-flex; align-items:center; gap:8px; margin-top:10px;
+  background:#25D366; color:var(--white) !important; padding:10px 20px; border-radius:24px;
+  font-weight:700; font-size:13px; box-shadow:0 3px 10px rgba(37,211,102,.35); transition: all .15s ease;
+}
+.whatsapp-btn:hover{ background:#1EBE5A; transform:translateY(-1px); }
+.whatsapp-icon{ font-size:16px; }
+
+/* Rating badge (shop/product reviews) */
+.rating-badge{
+  display:inline-block; background:#FFF6E0; color:#B8860B; border:1px solid #E0B94A;
+  padding:3px 10px; border-radius:14px; font-size:11px; font-weight:700; margin-top:4px;
+}
+.rating-badge.no-rating{ background:var(--bg); color:#888; border-color:var(--line); font-weight:600; }
+
+/* Stock badge (in stock / out of stock) */
+.stock-badge{ display:inline-block; padding:3px 10px; border-radius:14px; font-size:11px; font-weight:700; margin-top:4px; }
+.stock-badge.out{ background:#FBEAE8; color:var(--red); }
+.stock-badge.in{ background:#E5F6EA; color:var(--green-dark); }
+.btn-primary.small:disabled{ background:#B7BDB5; cursor:not-allowed; }
+
+/* Product weight/volume tag & discount badge */
+.product-unit{
+  display:inline-block; background:var(--green-light); color:var(--green-dark);
+  font-size:10.5px; font-weight:700; padding:2px 9px; border-radius:10px; margin-top:2px;
+}
+.discount-badge{
+  display:inline-block; background:var(--red); color:var(--white);
+  font-size:10.5px; font-weight:800; padding:2px 9px; border-radius:10px; margin-top:4px;
+}
+.price-original{ text-decoration:line-through; color:#9aa39a; font-size:12px; font-weight:600; margin-right:6px; }
+.price-final{ color:var(--red); font-weight:800; font-size:14px; }
+.mini-label{ font-size:11px; color:#6b756f; font-weight:600; margin-top:4px; display:block; }
+
+/* Checkbox label (e.g. in-stock toggle) */
+.checkbox-label{ display:flex !important; align-items:center; gap:8px; font-size:13px; margin-top:10px !important; }
+.checkbox-label input{ width:auto !important; }
+
+/* Location filter dropdown on customer shops page */
+.location-filter{ display:flex; align-items:center; gap:10px; margin:14px 0; flex-wrap:wrap; }
+.location-filter label{ font-size:13px; font-weight:600; color:var(--green-dark); }
+.location-filter select{ padding:8px 12px; border:1px solid var(--line); border-radius:20px; font-size:13px; background:var(--white); }
+
+/* Review / rating form on customer orders */
+.review-form{ margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+.review-form select, .review-form textarea{
+  width:100%; padding:8px; border:1px solid var(--line); border-radius:8px; font-size:13px; font-family:inherit;
+}
+
+/* Admin sales report table */
+.report-table{ margin:12px 0 24px; background:var(--white); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+.report-row{ display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; padding:10px 14px; font-size:13px; border-bottom:1px solid var(--line); }
+.report-row-6{ grid-template-columns:1.1fr 0.7fr 1fr 1fr 1fr 1fr; font-size:12px; }
+.report-row:last-child{ border-bottom:none; }
+.report-head{ background:var(--green-dark); color:var(--white); font-weight:700; }
+
+.whatsapp-btn.small{ padding:6px 14px; font-size:12px; margin-top:8px; }
+
+@media (max-width:480px){
+  .stats-grid{ grid-template-columns:repeat(2,1fr); }
+  .report-row{ grid-template-columns:1fr 1fr; row-gap:4px; }
+  .report-row-6{ grid-template-columns:1fr 1fr; }
+}

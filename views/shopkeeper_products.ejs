@@ -1,0 +1,103 @@
+<%- include('partials/header', {title: 'Products'}) %>
+
+<div class="page-head">
+  <h2>Apni Products</h2>
+  <a href="/shopkeeper/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<% if (typeof error !== 'undefined' && error) { %><p class="error-msg"><%= error %></p><% } %>
+<% if (typeof success !== 'undefined' && success) { %><p class="otp-demo"><%= success %></p><% } %>
+
+<h3>Payment Settings</h3>
+<p class="note">Yahan se decide karein customer aapki shop se order karte waqt kaunse payment method use kar sakta hai. JazzCash/EasyPaisa allow karne par customer seedha aapke diye gaye number par payment karega — order confirm karne se pehle aapko woh payment khud verify karni hogi.</p>
+<form method="POST" action="/shopkeeper/payment-settings" class="form-card no-shadow">
+  <label class="checkbox-label"><input type="checkbox" name="acceptCOD" <%= shop && shop.acceptCOD !== false ? 'checked' : '' %>> Cash on Delivery Accept Karein</label>
+
+  <label class="checkbox-label"><input type="checkbox" name="acceptJazzCash" id="acceptJazzCash" <%= shop && shop.acceptJazzCash ? 'checked' : '' %> onchange="document.getElementById('jazzcashNumberBox').style.display=this.checked?'block':'none'"> JazzCash Accept Karein</label>
+  <div id="jazzcashNumberBox" style="display:<%= shop && shop.acceptJazzCash ? 'block' : 'none' %>;">
+    <label>Aapka JazzCash Number</label>
+    <input type="text" name="jazzcashNumber" value="<%= shop ? shop.jazzcashNumber : '' %>" placeholder="03xxxxxxxxx">
+  </div>
+
+  <label class="checkbox-label"><input type="checkbox" name="acceptEasyPaisa" id="acceptEasyPaisa" <%= shop && shop.acceptEasyPaisa ? 'checked' : '' %> onchange="document.getElementById('easypaisaNumberBox').style.display=this.checked?'block':'none'"> EasyPaisa Accept Karein</label>
+  <div id="easypaisaNumberBox" style="display:<%= shop && shop.acceptEasyPaisa ? 'block' : 'none' %>;">
+    <label>Aapka EasyPaisa Number</label>
+    <input type="text" name="easypaisaNumber" value="<%= shop ? shop.easypaisaNumber : '' %>" placeholder="03xxxxxxxxx">
+  </div>
+
+  <button type="submit" class="btn-primary">Payment Settings Save Karein</button>
+</form>
+
+<h3>Nayi Product Add Karein</h3>
+<form method="POST" action="/shopkeeper/products/add" enctype="multipart/form-data" class="form-card no-shadow">
+  <label>Product Ka Naam</label>
+  <input type="text" name="name" required>
+  <label>Price (Rs.)</label>
+  <input type="number" name="price" step="0.01" required>
+  <label>Weight / Volume</label>
+  <select name="unit">
+    <option value="">-- Select Karein (Piece / Item) --</option>
+    <option value="250 gram">250 Gram</option>
+    <option value="500 gram">500 Gram</option>
+    <option value="1000 gram (1 KG)">1000 Gram (1 KG)</option>
+    <option value="1 KG">1 KG</option>
+    <option value="1 Liter">1 Liter</option>
+    <option value="2 Liter">2 Liter</option>
+    <option value="3 Liter">3 Liter</option>
+    <option value="5 Liter">5 Liter</option>
+  </select>
+  <label>Discount (%) — optional</label>
+  <input type="number" name="discount" step="1" min="0" max="100" placeholder="Masalan: 10">
+  <label>Tasveer</label>
+  <input type="file" name="pic" accept="image/*">
+  <label class="checkbox-label"><input type="checkbox" name="inStock" checked> Stock Mein Available Hai</label>
+  <button type="submit" class="btn-primary">Add Karein</button>
+</form>
+
+<h3>Mojooda Products</h3>
+<% if (items.length > 0) { %>
+<div class="search-bar">
+  <input type="text" placeholder="Apni products mein search karein..." oninput="liveSearch(this, '.product-card', 'no-product-results')">
+</div>
+<% } %>
+<p class="no-results-msg" id="no-product-results">Koi product is naam se nahi mila.</p>
+<div class="product-grid">
+  <% items.forEach(p => { %>
+    <div class="product-card" data-search="<%= p.name.toLowerCase() %>">
+      <div class="product-pic"><% if (p.pic) { %><img src="<%= p.pic %>"><% } else { %>📦<% } %></div>
+      <% if (p.unit) { %><span class="product-unit"><%= p.unit %></span><% } %>
+      <% if (p.discount > 0) { %><span class="discount-badge"><%= p.discount %>% OFF</span><% } %>
+      <% if (p.inStock === false) { %>
+        <span class="stock-badge out">❌ Out of Stock</span>
+      <% } else { %>
+        <span class="stock-badge in">✅ In Stock</span>
+      <% } %>
+      <form method="POST" action="/shopkeeper/products/<%= p.id %>/update" enctype="multipart/form-data" class="edit-form">
+        <input type="text" name="name" value="<%= p.name %>" required>
+        <input type="number" name="price" step="0.01" value="<%= p.price %>" required>
+        <label class="mini-label">Weight / Volume</label>
+        <select name="unit">
+          <option value="" <%= !p.unit ? 'selected' : '' %>>-- Piece / Item --</option>
+          <option value="250 gram" <%= p.unit === '250 gram' ? 'selected' : '' %>>250 Gram</option>
+          <option value="500 gram" <%= p.unit === '500 gram' ? 'selected' : '' %>>500 Gram</option>
+          <option value="1000 gram (1 KG)" <%= p.unit === '1000 gram (1 KG)' ? 'selected' : '' %>>1000 Gram (1 KG)</option>
+          <option value="1 KG" <%= p.unit === '1 KG' ? 'selected' : '' %>>1 KG</option>
+          <option value="1 Liter" <%= p.unit === '1 Liter' ? 'selected' : '' %>>1 Liter</option>
+          <option value="2 Liter" <%= p.unit === '2 Liter' ? 'selected' : '' %>>2 Liter</option>
+          <option value="3 Liter" <%= p.unit === '3 Liter' ? 'selected' : '' %>>3 Liter</option>
+          <option value="5 Liter" <%= p.unit === '5 Liter' ? 'selected' : '' %>>5 Liter</option>
+        </select>
+        <label class="mini-label">Discount (%)</label>
+        <input type="number" name="discount" step="1" min="0" max="100" value="<%= p.discount || 0 %>">
+        <input type="file" name="pic" accept="image/*">
+        <label class="checkbox-label"><input type="checkbox" name="inStock" <%= p.inStock !== false ? 'checked' : '' %>> Stock Mein Available Hai</label>
+        <button type="submit" class="btn-primary small">Update</button>
+      </form>
+      <form method="POST" action="/shopkeeper/products/<%= p.id %>/delete">
+        <button type="submit" class="remove-btn">Delete</button>
+      </form>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>

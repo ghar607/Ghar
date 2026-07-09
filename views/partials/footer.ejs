@@ -1,0 +1,29 @@
+</main>
+<footer class="footer">
+  <p><%= SITE.tagline %> — <strong><%= SITE.name %></strong></p>
+  <a href="https://wa.me/<%= SITE.whatsapp.replace('+','') %>?text=<%= encodeURIComponent('Assalam-o-Alaikum, mujhe Ghar ki Zarurat ke baray mein maloomat chahiye.') %>" target="_blank" class="whatsapp-btn">
+    <span class="whatsapp-icon">💬</span> WhatsApp par Rabta Karein
+  </a>
+</footer>
+<script>
+// Generic live-search: ek search input ko kisi bhi card list se jorne ke liye.
+// Usage: <input oninput="liveSearch(this, '.card-class', 'noResultsId')">
+// Har card par data-search="..." attribute hona chahiye (chhota text jis par search ho).
+function liveSearch(input, cardSelector, noResultsId) {
+  const q = input.value.trim().toLowerCase();
+  const cards = document.querySelectorAll(cardSelector);
+  let visibleCount = 0;
+  cards.forEach(function (card) {
+    const haystack = (card.getAttribute('data-search') || card.innerText || '').toLowerCase();
+    const match = haystack.includes(q);
+    card.style.display = match ? '' : 'none';
+    if (match) visibleCount++;
+  });
+  if (noResultsId) {
+    const msg = document.getElementById(noResultsId);
+    if (msg) msg.style.display = visibleCount === 0 && cards.length > 0 ? '' : 'none';
+  }
+}
+</script>
+</body>
+</html>

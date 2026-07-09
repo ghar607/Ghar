@@ -1,0 +1,94 @@
+<%- include('partials/header', {title: 'All Orders'}) %>
+
+<div class="page-head">
+  <h2>Sare Orders — Full Details</h2>
+  <a href="/admin/dashboard" class="cart-link">← Dashboard</a>
+</div>
+
+<% if (orders.length > 0) { %>
+<div class="search-bar">
+  <input type="text" placeholder="Order #, customer, shop ya rider search karein..." oninput="liveSearch(this, '.order-card', 'no-order-results')">
+</div>
+<p class="no-results-msg" id="no-order-results">Koi order is naam se nahi mila.</p>
+<% } %>
+
+<% orders.forEach(o => { %>
+  <div class="order-card" data-search="<%= (o.id + ' ' + o.customerName + ' ' + o.customerPhone + ' ' + (o.shop ? o.shop.name : '') + ' ' + (o.rider ? o.rider.name : '') + ' ' + o.status + ' ' + o.paymentMethod).toLowerCase() %>">
+    <div class="order-top">
+      <strong>Order #<%= o.id %></strong>
+      <span class="status-badge status-<%= o.status %>"><%= o.status %></span>
+    </div>
+    <p><strong>Customer:</strong> <%= o.customerName %>, <%= o.customerPhone %>, <%= o.customerAddress %></p>
+    <p><strong>Shop:</strong> <%= o.shop ? o.shop.name : '-' %></p>
+    <p><strong>Rider:</strong> <%= o.rider ? o.rider.name + ' (' + o.rider.phone + ')' : 'Abhi assign nahi hua' %></p>
+    <ul class="order-items">
+      <% o.items.forEach(i => { %><li><%= i.name %><% if (i.unit) { %> (<%= i.unit %>)<% } %> × <%= i.qty %> — Rs. <%= i.price * i.qty %></li><% }) %>
+    </ul>
+    <p>Total: Rs. <%= o.total %> | Commission: Rs. <%= o.commission %> (Rider: Rs. <%= o.riderCommission %> + Admin: Rs. <%= o.adminCommission %>) | Payment: <%= o.paymentMethod %><% if(o.transactionId) { %> (TxID: <%= o.transactionId %>)<% } %></p>
+    <% if (o.paymentMethod === 'COD') { %>
+      <span class="pay-badge pay-green">✅ Cash on Delivery</span>
+    <% } else if (o.paymentVerified) { %>
+      <span class="pay-badge pay-green">✅ Payment Verified (Shopkeeper Ne Khud Verify Ki)</span>
+    <% } else { %>
+      <span class="pay-badge pay-red">⏳ Direct Payment — Shopkeeper Verify Karega</span>
+      <form method="POST" action="/admin/order/<%= o.id %>/verify-payment">
+        <button class="btn-primary small">Admin Bhi Yahan Se Verify Kar Sakta Hai</button>
+      </form>
+    <% } %>
+
+    <% if (o.directPayment) { %>
+    <div class="payout-box">
+      <p><strong>Yeh payment seedha shopkeeper ke account mein gayi hai.</strong> Shopkeeper delivery ke baad commission (Rs. <%= o.commission %>) admin ko wapas bhejta hai.</p>
+      <% if (o.commissionReceived) { %>
+        <span class="pay-badge pay-green">✅ Commission Mil Chuki (<%= new Date(o.commissionReceivedAt).toLocaleString() %>)</span>
+      <% } else if (o.commissionSent) { %>
+        <span class="pay-badge pay-red">⏳ Shopkeeper Ne Bheji, Confirm Karein (TxID: <%= o.commissionTransactionId %>)</span>
+        <form method="POST" action="/admin/order/<%= o.id %>/confirm-commission">
+          <button class="btn-primary small">Commission Receive Confirm Karein (Rs. <%= o.commission %>)</button>
+        </form>
+      <% } else { %>
+        <span class="note">Delivery aur shopkeeper ke commission bhejne ka intezaar hai.</span>
+      <% } %>
+    </div>
+    <% } else { %>
+    <div class="payout-box">
+      <p><strong>Shopkeeper Ko Payout:</strong> Rs. <%= o.payoutAmount %> (Total Rs. <%= o.total %> − Commission Rs. <%= o.commission %>)</p>
+      <% if (o.payoutSent) { %>
+        <span class="pay-badge pay-green">✅ Payout Bhej Diya Gaya (<%= new Date(o.payoutSentAt).toLocaleString() %>)</span>
+      <% } else if (o.status !== 'delivered') { %>
+        <span class="note">Delivery complete hone ke baad payout bhej sakte hain.</span>
+      <% } else if (!o.paymentVerified) { %>
+        <span class="note">Payment verify karne ke baad payout bhej sakte hain.</span>
+      <% } else { %>
+        <form method="POST" action="/admin/order/<%= o.id %>/send-payout">
+          <button class="btn-primary small">Shopkeeper Ko Payout Bheja (Rs. <%= o.payoutAmount %>)</button>
+        </form>
+      <% } %>
+    </div>
+    <% } %>
+
+    <% if (o.rider) { %>
+    <div class="payout-box">
+      <p><strong>Rider Ko Commission Payout:</strong> Rs. <%= o.riderCommission %></p>
+      <% if (o.riderPayoutSent) { %>
+        <span class="pay-badge pay-green">✅ Rider Ko Bhej Diya Gaya (<%= new Date(o.riderPayoutSentAt).toLocaleString() %>)</span>
+      <% } else if (o.status !== 'delivered') { %>
+        <span class="note">Delivery complete hone ke baad rider ka commission bhej sakte hain.</span>
+      <% } else { %>
+        <form method="POST" action="/admin/order/<%= o.id %>/send-rider-payout">
+          <button class="btn-primary small">Rider Ko Commission Bheja (Rs. <%= o.riderCommission %>)</button>
+        </form>
+      <% } %>
+    </div>
+    <% } %>
+
+    <details>
+      <summary>Order Timeline</summary>
+      <ul class="order-items">
+        <% o.log.forEach(l => { %><li><%= l.status %> — <%= new Date(l.at).toLocaleString() %></li><% }) %>
+      </ul>
+    </details>
+  </div>
+<% }) %>
+
+<%- include('partials/footer') %>
