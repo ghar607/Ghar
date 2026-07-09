@@ -6,6 +6,9 @@ const path = require("path");
 const fs = require("fs");
 const { load, save, nextId } = require("./db");
 
+// Mobile app (React Native) ke liye alag JSON API — website ke routes se bilkul mustaqil
+const apiRouter = require("./api");
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -116,6 +119,9 @@ app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   next();
 });
+
+// Mobile app ke JSON API endpoints /api/... par yahan connect ho rahe hain (api.js file mein hain)
+app.use("/api", express.json(), apiRouter);
 
 // ---------- Home ----------
 app.get("/", (req, res) => {
